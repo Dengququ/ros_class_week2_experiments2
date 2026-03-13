@@ -1,4 +1,4 @@
-# D_ROS_CLASS_WS — 第二周 ROS 实验工作空间
+# DJF_ROS_CLASS_WS — 第二周 ROS 实验工作空间
 
 ## 工作空间结构
 
