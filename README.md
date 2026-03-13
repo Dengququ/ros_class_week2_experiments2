@@ -158,3 +158,42 @@ rosmsg show my_class_pkg/MyMessage
 rossrv show my_class_pkg/MyServiceMsg
 rosmsg show my_class_pkg/MyActionGoal
 ```
+
+---
+
+## 传感器实验
+
+> 所有传感器节点均需先启动硬件通信：
+> ```bash
+> roslaunch upros_bringup bringup_w2a.launch
+> ```
+
+### 碰撞传感器（Bump Sensor）
+
+```bash
+# 订阅并打印碰撞传感器数据
+rosrun my_class_pkg ros_bump_node
+
+# 基于碰撞传感器的自动避障（触碰后后退+转向）
+rosrun my_class_pkg ros_bump_avoid_node
+```
+
+### 超声波 / TOF 传感器
+
+```bash
+# 订阅并打印超声波距离数据（左/前/右）
+rosrun my_class_pkg ros_sonic_node
+
+# 基于 TOF 传感器的自动避障（距离 < 0.3m 时转向）
+rosrun my_class_pkg ros_tof_avoid_node
+```
+
+### IMU 传感器
+
+```bash
+# 订阅并打印 IMU 数据（加速度 / 角速度 / 姿态四元数）
+rosrun my_class_pkg ros_imu_node
+
+# 基于 IMU 自旋控制（旋转精确 180°后自动停止）
+rosrun my_class_pkg ros_imu_spin_node
+```

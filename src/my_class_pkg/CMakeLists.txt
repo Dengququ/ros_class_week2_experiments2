@@ -82,3 +82,33 @@ add_dependencies(ros_action_server ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_
 add_executable(ros_action_client src/ros_action_client.cpp)
 target_link_libraries(ros_action_client ${catkin_LIBRARIES})
 add_dependencies(ros_action_client ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+## 传感器实验 — 碰撞传感器订阅
+add_executable(ros_bump_node src/ros_bump.cpp)
+target_link_libraries(ros_bump_node ${catkin_LIBRARIES})
+add_dependencies(ros_bump_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+## 传感器实验 — 碰撞传感器避障
+add_executable(ros_bump_avoid_node src/ros_bump_avoid.cpp)
+target_link_libraries(ros_bump_avoid_node ${catkin_LIBRARIES})
+add_dependencies(ros_bump_avoid_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+## 传感器实验 — 超声波订阅
+add_executable(ros_sonic_node src/ros_sonic.cpp)
+target_link_libraries(ros_sonic_node ${catkin_LIBRARIES})
+add_dependencies(ros_sonic_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+## 传感器实验 — TOF 避障
+add_executable(ros_tof_avoid_node src/ros_tof_avoid.cpp)
+target_link_libraries(ros_tof_avoid_node ${catkin_LIBRARIES})
+add_dependencies(ros_tof_avoid_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+## 传感器实验 — IMU 订阅
+add_executable(ros_imu_node src/ros_imu.cpp)
+target_link_libraries(ros_imu_node ${catkin_LIBRARIES})
+add_dependencies(ros_imu_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+## 传感器实验 — IMU 自旋 180°
+add_executable(ros_imu_spin_node src/ros_imu_spin.cpp)
+target_link_libraries(ros_imu_spin_node ${catkin_LIBRARIES})
+add_dependencies(ros_imu_spin_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
