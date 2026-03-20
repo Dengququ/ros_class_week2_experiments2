@@ -5,7 +5,9 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
+  geometry_msgs
   message_generation
+  dynamic_reconfigure
   actionlib
   actionlib_msgs
 )
@@ -28,6 +30,10 @@ add_action_files(
   FILES MyAction.action
 )
 
+generate_dynamic_reconfigure_options(
+  cfg/Tutorials.cfg
+)
+
 generate_messages(
   DEPENDENCIES
   std_msgs
@@ -35,7 +41,7 @@ generate_messages(
 )
 
 catkin_package(
-  CATKIN_DEPENDS message_runtime actionlib actionlib_msgs
+  CATKIN_DEPENDS geometry_msgs message_runtime dynamic_reconfigure actionlib actionlib_msgs
 )
 
 include_directories(
@@ -112,3 +118,23 @@ add_dependencies(ros_imu_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPOR
 add_executable(ros_imu_spin_node src/ros_imu_spin.cpp)
 target_link_libraries(ros_imu_spin_node ${catkin_LIBRARIES})
 add_dependencies(ros_imu_spin_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+## 参数实验 - C++ 参数读写
+add_executable(ros_param src/ros_param.cpp)
+target_link_libraries(ros_param ${catkin_LIBRARIES})
+add_dependencies(ros_param ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+## 动态参数实验 - 基础动态参数服务端
+add_executable(dynamic_reconfigure_node src/dynamic_reconfigure.cpp)
+add_dependencies(dynamic_reconfigure_node ${PROJECT_NAME}_gencfg ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(dynamic_reconfigure_node ${catkin_LIBRARIES})
+
+## 动态参数实验 - 小乌龟速度动态配置
+add_executable(ros_dynamic_speed_node src/ros_dynamic_speed.cpp)
+add_dependencies(ros_dynamic_speed_node ${PROJECT_NAME}_gencfg ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(ros_dynamic_speed_node ${catkin_LIBRARIES})
+
+## 日志实验 - C++ 日志节点
+add_executable(ros_log src/ros_log.cpp)
+target_link_libraries(ros_log ${catkin_LIBRARIES})
+add_dependencies(ros_log ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
