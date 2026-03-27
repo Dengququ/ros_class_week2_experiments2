@@ -1,0 +1,18 @@
+<launch>
+
+  <!-- 加载 URDF 到参数服务器 -->
+  <param name="robot_description"
+         command="$(find xacro)/xacro $(find djf_robot_description)/urdf/simple_robot.urdf"/>
+
+  <!-- 发布机器人状态 -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher"
+        type="robot_state_publisher" respawn="false" output="screen"/>
+
+  <!-- 发布关节状态（提供 GUI 滑块控制轮子） -->
+  <node name="joint_state_publisher_gui" pkg="joint_state_publisher_gui"
+        type="joint_state_publisher_gui" respawn="false" output="screen"/>
+
+  <!-- 启动 RViz -->
+  <node name="rviz" pkg="rviz" type="rviz" respawn="false" output="screen"/>
+
+</launch>
