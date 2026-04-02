@@ -87,21 +87,21 @@
     </inertial>
   </link>
 
-  <!-- 左轮关节：revolute 类型，绕 Y 轴旋转 -->
+  <!-- 左轮关节：revolute 类型，绕轮子自身轴旋转 -->
   <joint name="wheel_left_joint" type="revolute">
     <parent link="base_link"/>
     <child link="wheel_left_link"/>
     <origin xyz="0.0 0.17 -0.05" rpy="1.5708 0.0 0.0"/>
-    <axis xyz="0 1 0"/>
+    <axis xyz="0 0 1"/>
     <limit lower="-1e9" upper="1e9" effort="10.0" velocity="10.0"/>
   </joint>
 
-  <!-- 右轮关节：revolute 类型，绕 Y 轴旋转 -->
+  <!-- 右轮关节：revolute 类型，绕轮子自身轴旋转 -->
   <joint name="wheel_right_joint" type="revolute">
     <parent link="base_link"/>
     <child link="wheel_right_link"/>
     <origin xyz="0.0 -0.17 -0.05" rpy="1.5708 0.0 0.0"/>
-    <axis xyz="0 1 0"/>
+    <axis xyz="0 0 1"/>
     <limit lower="-1e9" upper="1e9" effort="10.0" velocity="10.0"/>
   </joint>
 
@@ -111,5 +111,42 @@
     <child link="caster_link"/>
     <origin xyz="-0.15 0.0 -0.08" rpy="0.0 0.0 0.0"/>
   </joint>
+
+  <!-- 驱动轮摩擦力，确保不打滑 -->
+  <gazebo reference="wheel_left_link">
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+  </gazebo>
+  <gazebo reference="wheel_right_link">
+    <mu1>1.0</mu1>
+    <mu2>1.0</mu2>
+  </gazebo>
+
+  <!-- 万向轮摩擦力设为 0，避免仿真中产生阻力 -->
+  <gazebo reference="caster_link">
+    <mu1>0.0</mu1>
+    <mu2>0.0</mu2>
+  </gazebo>
+
+  <!-- 差速驱动插件 -->
+  <gazebo>
+    <plugin name="differential_drive_controller"
+            filename="libgazebo_ros_diff_drive.so">
+      <leftJoint>wheel_left_joint</leftJoint>
+      <rightJoint>wheel_right_joint</rightJoint>
+      <wheelSeparation>0.34</wheelSeparation>
+      <wheelDiameter>0.12</wheelDiameter>
+      <maxWheelTorque>20</maxWheelTorque>
+      <maxWheelAcceleration>1.0</maxWheelAcceleration>
+      <commandTopic>/cmd_vel</commandTopic>
+      <odometryTopic>/odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
+      <robotBaseFrame>base_link</robotBaseFrame>
+      <publishWheelTF>false</publishWheelTF>
+      <publishOdomTF>true</publishOdomTF>
+      <publishWheelJointState>true</publishWheelJointState>
+      <rosDebugLevel>na</rosDebugLevel>
+    </plugin>
+  </gazebo>
 
 </robot>

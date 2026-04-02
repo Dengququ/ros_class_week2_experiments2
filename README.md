@@ -1,17 +1,30 @@
-# DJF_ROS_CLASS_WS — 第二周 ROS 实验工作空间
+# DJF_ROS_CLASS_WS — ROS 实验工作空间
 
 ## 工作空间结构
 
 ```
-d_ros_class_ws/
+djf_ros_class_ws/
 └── src/
-    └── my_class_pkg/
-        ├── msg/          # 自定义消息
-        ├── srv/          # 自定义服务
-        ├── action/       # 自定义动作
-        ├── src/          # C++ 节点
-        ├── scripts/      # Python 节点
-        └── launch/       # Launch 文件
+    ├── my_class_pkg/           # 第二周：话题/服务/动作/传感器实验
+    │   ├── msg/                # 自定义消息
+    │   ├── srv/                # 自定义服务
+    │   ├── action/             # 自定义动作
+    │   ├── src/                # C++ 节点
+    │   ├── scripts/            # Python 节点
+    │   └── launch/             # Launch 文件
+    ├── djf_robot_description/  # 第四周：两轮小车 URDF/Xacro 建模
+    │   ├── urdf/
+    │   │   ├── simple_robot.urdf   # 原始 URDF
+    │   │   └── simple_robot.xacro  # Xacro 参数化版本（含激光雷达）
+    │   └── launch/
+    │       ├── display.launch      # RViz 可视化
+    │       └── gazebo.launch       # Gazebo 仿真
+    └── zx_description/         # 第四周：教具机 W2A 机械臂模型
+        ├── urdf/W2A/
+        │   ├── w2a.urdf
+        │   └── w2a.xacro
+        └── launch/
+            └── w2a.launch          # Gazebo 仿真启动
 ```
 
 ---
@@ -19,9 +32,37 @@ d_ros_class_ws/
 ## 环境准备
 
 ```bash
-cd ~/d_ros_class_ws
+cd ~/djf_ros_class_ws
 catkin_make
 source devel/setup.bash
+```
+
+---
+
+## 第四周：机器人建模与 Gazebo 仿真
+
+### 两轮小车（djf_robot_description）
+
+```bash
+source ~/djf_ros_class_ws/devel/setup.bash
+
+# RViz 可视化
+roslaunch djf_robot_description display.launch
+
+# Gazebo 仿真
+roslaunch djf_robot_description gazebo.launch
+
+# 键盘控制小车（新终端）
+rosrun teleop_twist_keyboard teleop_twist_keyboard.py
+```
+
+### 教具机 W2A 机械臂（zx_description）
+
+```bash
+source ~/djf_ros_class_ws/devel/setup.bash
+
+# Gazebo 仿真
+roslaunch zx_description w2a.launch
 ```
 
 ---

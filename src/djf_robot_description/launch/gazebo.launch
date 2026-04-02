@@ -1,0 +1,26 @@
+<launch>
+
+  <!-- 加载 URDF 到参数服务器 -->
+  <param name="robot_description"
+         command="$(find xacro)/xacro $(find djf_robot_description)/urdf/simple_robot.xacro"/>
+
+  <!-- 启动 Gazebo 空世界 -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="worlds/empty.world"/>
+    <arg name="paused" value="false"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="true"/>
+    <arg name="debug" value="false"/>
+  </include>
+
+  <!-- 将机器人 spawn 到 Gazebo，z=0.1 防止陷地 -->
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model"
+        args="-urdf -model simple_robot -param robot_description -x 0 -y 0 -z 0.1"
+        output="screen"/>
+
+  <!-- 发布机器人状态（TF） -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher"
+        type="robot_state_publisher" output="screen"/>
+
+</launch>
+

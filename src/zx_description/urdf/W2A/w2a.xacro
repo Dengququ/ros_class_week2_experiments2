@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<robot name="w2a"
+	xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+	<xacro:include filename="$(find zx_description)/urdf/W2A/w2a.urdf" />
+	<xacro:include filename="$(find zx_description)/urdf/W2A/differential_drive_controller.xacro" />
+	<xacro:include filename="$(find zx_description)/urdf/W2A/arm_controller.xacro" />
+
+	<xacro:include filename="$(find zx_description)/urdf/W2A/rplidar.xacro" />
+	<xacro:include filename="$(find zx_description)/urdf/W2A/imu.xacro" />
+	<xacro:include filename="$(find zx_description)/urdf/W2A/depth_camera.xacro" />
+	<xacro:include filename="$(find zx_description)/urdf/W2A/sonar.xacro" />
+
+	<xacro:differential_drive_controller/>
+
+	<xacro:transmission_block joint_name="joint_1"/>
+	<xacro:transmission_block joint_name="joint_2"/>
+	<xacro:transmission_block joint_name="joint_3"/>
+	<xacro:transmission_block joint_name="joint_4"/>
+	<xacro:transmission_block joint_name="joint_5"/>
+	<xacro:transmission_block joint_name="claw_joint_1"/>
+	<xacro:transmission_block joint_name="claw_joint_2"/>
+
+	<xacro:rplidar prefix="laser"/>
+	<xacro:imu prefix="imu"/> 
+	<xacro:depth_camera prefix="camera"/>
+	<xacro:sonar pos="front" xyz=" 0.182 0 0.03" rpy="0 0 0"/>
+    <xacro:sonar pos="left" xyz=" 0.0 0.14 0.03" rpy="0 0 0.78"/>
+    <xacro:sonar pos="right" xyz=" 0.0 -0.14 0.03" rpy="0 0 -0.78"/>
+
+
+</robot>

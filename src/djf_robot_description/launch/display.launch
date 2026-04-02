@@ -2,7 +2,7 @@
 
   <!-- 加载 URDF 到参数服务器 -->
   <param name="robot_description"
-         command="$(find xacro)/xacro $(find djf_robot_description)/urdf/simple_robot.urdf"/>
+         command="$(find xacro)/xacro $(find djf_robot_description)/urdf/simple_robot.xacro"/>
 
   <!-- 发布机器人状态 -->
   <node name="robot_state_publisher" pkg="robot_state_publisher"

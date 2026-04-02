@@ -1,0 +1,13 @@
+<launch>
+  
+  <param name="use_sim_time" value="true" />
+
+  <arg name="map_name" default="my_lab.yaml" />
+
+  <node name="map_server" pkg="map_server" type="map_server" args="$(find zx_description)/maps/$(arg map_name)"/>
+
+  <include file="$(find zx_description)/launch/include/amcl.launch.xml" />
+
+  <include file="$(find zx_description)/launch/include/move_base.launch.xml" />
+  
+</launch>
