@@ -1,0 +1,2 @@
+# 排除大型 Gazebo 模型资源（3D 网格/纹理）
+gazebo_models/
