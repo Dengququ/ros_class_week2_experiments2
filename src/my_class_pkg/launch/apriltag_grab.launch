@@ -1,0 +1,16 @@
+<launch>
+    <!-- 实验五：AprilTag 视觉抓取 -->
+    <!-- 依赖（需提前在其他终端启动）：
+         roslaunch zoo_bringup bringup_w2c.launch
+         roslaunch realsense2_camera rs_camera.launch  -->
+
+    <!-- AprilTag ROS 识别节点（发布 tag_1 的 TF 变换） -->
+    <include file="$(find upros_arm)/launch/recognize_apriltag.launch"/>
+
+    <!-- 机械臂控制中心（提供 arm_pos_service_open / grab_service / zero_service） -->
+    <include file="$(find upros_arm)/launch/control_center.launch"/>
+
+    <!-- 视觉抓取节点（靠近对准 + 机械臂抓取） -->
+    <node pkg="upros_tutorial" type="apriltag_grab.py"
+          name="apriltag_grab" output="screen"/>
+</launch>
