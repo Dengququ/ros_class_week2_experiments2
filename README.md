@@ -1,9 +1,9 @@
-# D_ROS_CLASS_WS — 第二周 ROS 实验工作空间
+# D_ROS_CLASS_WS - 第二周 ROS 实验工作空间
 
 ## 工作空间结构
 
-```
-d_ros_class_ws/
+```bash
+djf_ros_class_ws/
 └── src/
     └── my_class_pkg/
         ├── msg/          # 自定义消息
@@ -14,186 +14,177 @@ d_ros_class_ws/
         └── launch/       # Launch 文件
 ```
 
----
-
 ## 环境准备
 
 ```bash
-cd ~/d_ros_class_ws
+cd ~/djf_ros_class_ws
 catkin_make
 source devel/setup.bash
 ```
 
----
+## 基础通信实验
 
-## 启动指令
-
-### 5.1 C++ 标准消息（Topic）
+### 5.1 C++ 标准消息 Topic
 
 ```bash
-# 终端1 — 启动 ROS Master
 roscore
-
-# 终端2 — 发布者
 rosrun my_class_pkg ros_publisher_node
-
-# 终端3 — 订阅者
 rosrun my_class_pkg ros_subscriber_node
-
-# 或查看话题内容
 rostopic echo /my_topic
 ```
 
----
-
-### 5.2 Python 标准消息（Topic）
+### 5.2 Python 标准消息 Topic
 
 ```bash
-# 终端1
 roscore
-
-# 终端2 — 发布者
 rosrun my_class_pkg ros_publisher_node.py
-
-# 终端3 — 订阅者
 rosrun my_class_pkg ros_subscriber_node.py
 ```
 
----
-
-### 5.3 C++ 自定义消息（MyMessage）
+### 5.3 C++ 自定义消息 MyMessage
 
 ```bash
-# 终端1
 roscore
-
-# 终端2 — 自定义消息发布者
 rosrun my_class_pkg msg_publisher_node
-
-# 终端3 — 自定义消息订阅者
 rosrun my_class_pkg msg_subscriber_node
-
-# 或查看话题内容
 rostopic echo /my_msg_topic
 ```
 
----
-
-### 5.5 Launch 文件一键启动（发布者 + 订阅者）
+### 5.5 Launch 文件一键启动
 
 ```bash
 roslaunch my_class_pkg bringup_topic.launch
 ```
 
-> 无需单独启动 roscore，launch 文件会自动处理。
-
----
-
-### 服务实验（Service）
-
-#### C++ 服务
+### 服务实验 Service
 
 ```bash
-# 终端1
 roscore
-
-# 终端2 — 服务端
 rosrun my_class_pkg ros_server_node
-
-# 终端3 — 客户端（一次性请求）
 rosrun my_class_pkg ros_client_node
 ```
 
-#### Python 服务
-
 ```bash
-# 终端1
 roscore
-
-# 终端2 — 服务端
 rosrun my_class_pkg ros_server.py
-
-# 终端3 — 客户端
 rosrun my_class_pkg ros_client.py
 ```
 
----
-
-### 动作实验（Action）
-
-#### C++ 动作
+### 动作实验 Action
 
 ```bash
-# 终端1
 roscore
-
-# 终端2 — 动作服务端
 rosrun my_class_pkg ros_action_server
-
-# 终端3 — 动作客户端
 rosrun my_class_pkg ros_action_client
 ```
 
-#### Python 动作
-
 ```bash
-# 终端1
 roscore
-
-# 终端2 — 动作服务端
 rosrun my_class_pkg ros_action_server.py
-
-# 终端3 — 动作客户端
 rosrun my_class_pkg ros_action_client.py
 ```
 
----
-
-## 验证自定义消息 / 服务 / 动作
-
-```bash
-source ~/d_ros_class_ws/devel/setup.bash
-
-rosmsg show my_class_pkg/MyMessage
-rossrv show my_class_pkg/MyServiceMsg
-rosmsg show my_class_pkg/MyActionGoal
-```
-
----
-
 ## 传感器实验
 
-> 所有传感器节点均需先启动硬件通信：
-> ```bash
-> roslaunch upros_bringup bringup_w2a.launch
-> ```
-
-### 碰撞传感器（Bump Sensor）
+先启动硬件通信：
 
 ```bash
-# 订阅并打印碰撞传感器数据
-rosrun my_class_pkg ros_bump_node
+roslaunch upros_bringup bringup_w2a.launch
+```
 
-# 基于碰撞传感器的自动避障（触碰后后退+转向）
+### 碰撞传感器
+
+```bash
+rosrun my_class_pkg ros_bump_node
 rosrun my_class_pkg ros_bump_avoid_node
 ```
 
-### 超声波 / TOF 传感器
+### 超声波与 TOF
 
 ```bash
-# 订阅并打印超声波距离数据（左/前/右）
 rosrun my_class_pkg ros_sonic_node
-
-# 基于 TOF 传感器的自动避障（距离 < 0.3m 时转向）
 rosrun my_class_pkg ros_tof_avoid_node
 ```
 
-### IMU 传感器
+### IMU
 
 ```bash
-# 订阅并打印 IMU 数据（加速度 / 角速度 / 姿态四元数）
 rosrun my_class_pkg ros_imu_node
-
-# 基于 IMU 自旋控制（旋转精确 180°后自动停止）
 rosrun my_class_pkg ros_imu_spin_node
+```
+
+## 视觉实验
+
+### 1. 颜色循迹
+
+脚本位置：`src/my_class_pkg/scripts/color_line_follow.py`
+
+功能：基于 HSV 颜色分割提取地面色带，计算重心后控制底盘沿线前进。
+
+运行前建议先完成相机与底盘启动，并根据现场颜色重新标定脚本中的 HSV 阈值。
+
+```bash
+roslaunch zoo_bringup bringup_w2c.launch
+roslaunch realsense2_camera rs_camera.launch
+source ~/djf_ros_class_ws/devel/setup.bash
+rosrun my_class_pkg color_line_follow.py
+```
+
+默认订阅 `/camera/color/image_raw`，控制输出到 `/cmd_vel`，处理后的图像发布到 `/image_result`。
+
+### 2. AprilTag 识别跟随
+
+脚本位置：`src/my_class_pkg/scripts/apriltag_follow.py`
+
+功能：检测 `ID=1` 的 AprilTag，控制机器人自动转向并向目标靠近，到达设定面积阈值后停止前进。
+
+```bash
+roslaunch zoo_bringup bringup_w2c.launch
+roslaunch realsense2_camera rs_camera.launch
+source ~/djf_ros_class_ws/devel/setup.bash
+rosrun my_class_pkg apriltag_follow.py
+```
+
+依赖 Python `apriltag` 库和相机图像话题 `/camera/color/image_raw`。
+
+### 3. AprilTag 识别抓取方块
+
+脚本位置：`src/my_class_pkg/scripts/apriltag_grab.py`
+
+启动文件：`src/my_class_pkg/launch/apriltag_grab.launch`
+
+功能：检测 `ID=1` 的 AprilTag，完成底盘靠近、对准、TF 查询和机械臂抓取流程。
+
+方式一，分终端手动启动：
+
+```bash
+roslaunch zoo_bringup bringup_w2c.launch
+roslaunch realsense2_camera rs_camera.launch
+roslaunch upros_arm recognize_apriltag.launch
+roslaunch upros_arm control_center.launch
+source ~/djf_ros_class_ws/devel/setup.bash
+rosrun my_class_pkg apriltag_grab.py
+```
+
+方式二，使用 launch 文件启动视觉抓取节点相关组件：
+
+```bash
+source ~/djf_ros_class_ws/devel/setup.bash
+roslaunch my_class_pkg apriltag_grab.launch
+```
+
+抓取实验依赖：
+
+- AprilTag 识别 TF: `tag_1`
+- 机械臂服务: `/upros_arm_control/arm_pos_service_open`
+- 抓取服务: `/upros_arm_control/grab_service`
+- 归零服务: `/upros_arm_control/zero_service`
+
+## 常用验证命令
+
+```bash
+source ~/djf_ros_class_ws/devel/setup.bash
+rosmsg show my_class_pkg/MyMessage
+rossrv show my_class_pkg/MyServiceMsg
+rosmsg show my_class_pkg/MyActionGoal
 ```
