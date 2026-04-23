@@ -1,0 +1,32 @@
+<launch>
+    <!-- 语音控制 AprilTag 抓取 -->
+    <!-- 依赖（需提前在其他终端启动）：
+         roslaunch zoo_bringup bringup_w2c.launch
+         roslaunch orbbec_camera dabai_dcw2.launch  -->
+
+    <!-- 静态 TF：base_link → arm_base_link -->
+    <node pkg="tf" type="static_transform_publisher" name="base_link_to_arm_base_link"
+          args="0.0 0.0 0.1704 0 0 0 base_link arm_base_link 100" />
+
+    <!-- 静态 TF：base_link → camera_link -->
+    <node pkg="tf" type="static_transform_publisher" name="base_link_to_camera_link"
+          args="0.15 0 0.045 0 0 0 base_link camera_link 100" />
+
+    <!-- AprilTag 识别 -->
+    <include file="$(find upros_arm)/launch/recognize_apriltag.launch"/>
+
+    <!-- 机械臂控制中心 -->
+    <include file="$(find upros_arm)/launch/control_center.launch"/>
+
+    <!-- 语音识别：麦克风 → /speech/result -->
+    <include file="$(find upros_chat)/launch/speech_to_word.launch" />
+
+    <!-- 语音合成：/talk → 扬声器 -->
+    <include file="$(find upros_chat)/launch/word_to_speech.launch" />
+
+    <!-- 语音意图解析：/speech/result → /voice_control -->
+    <node pkg="my_class_pkg" type="voice_control.py" name="voice_control" output="screen" />
+
+    <!-- 语音抓取节点：等待 /voice_control 指令后靠近并抓取 -->
+    <node pkg="my_class_pkg" type="apriltag_grab.py" name="apriltag_grab" output="screen" />
+</launch>

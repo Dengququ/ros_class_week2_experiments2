@@ -2,3 +2,7 @@ build/
 devel/
 install/
 .catkin_workspace
+src/my_class_pkg/scripts/moonshot_api_key.txt
+src/my_class_pkg/scripts/.voice_qa/
+src/my_class_pkg/scripts/__pycache__/
+src/my_class_pkg/src/.ros_param.cpp.swp

@@ -1,0 +1,17 @@
+<launch>
+    <!-- 语音导航一键启动
+         前提：已建图，navigation.launch 在另一个终端已启动
+         说"前往一号" / "前往二号"控制机器人导航 -->
+
+    <!-- 语音识别：麦克风 → /speech/result -->
+    <include file="$(find upros_chat)/launch/speech_to_word.launch" />
+
+    <!-- 语音合成：/talk → 扬声器 -->
+    <include file="$(find upros_chat)/launch/word_to_speech.launch" />
+
+    <!-- 语音意图解析：/speech/result → /voice_control (TagCommand) -->
+    <node pkg="my_class_pkg" type="voice_control.py" name="voice_control" output="screen" />
+
+    <!-- 语音导航：/voice_control go_to → move_base 目标点 -->
+    <node pkg="my_class_pkg" type="voice_nav.py" name="voice_nav" output="screen" />
+</launch>

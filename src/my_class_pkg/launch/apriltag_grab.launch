@@ -2,7 +2,15 @@
     <!-- 实验五：AprilTag 视觉抓取 -->
     <!-- 依赖（需提前在其他终端启动）：
          roslaunch zoo_bringup bringup_w2c.launch
-         roslaunch realsense2_camera rs_camera.launch  -->
+         roslaunch orbbec_camera dabai_dcw2.launch  -->
+
+    <!-- 静态 TF：base_link → arm_base_link -->
+    <node pkg="tf" type="static_transform_publisher" name="base_link_to_arm_base_link"
+          args="0.0 0.0 0.1704 0 0 0 base_link arm_base_link 100" />
+
+    <!-- 静态 TF：base_link → camera_link（TF 链路必须） -->
+    <node pkg="tf" type="static_transform_publisher" name="base_link_to_camera_link"
+          args="0.15 0 0.045 0 0 0 base_link camera_link 100" />
 
     <!-- AprilTag ROS 识别节点（发布 tag_1 的 TF 变换） -->
     <include file="$(find upros_arm)/launch/recognize_apriltag.launch"/>
@@ -10,7 +18,7 @@
     <!-- 机械臂控制中心（提供 arm_pos_service_open / grab_service / zero_service） -->
     <include file="$(find upros_arm)/launch/control_center.launch"/>
 
-    <!-- 视觉抓取节点（靠近对准 + 机械臂抓取） -->
+    <!-- 视觉抓取节点（靠近对准 + 机械臂抓取，自动启动无需语音） -->
     <node pkg="upros_tutorial" type="apriltag_grab.py"
           name="apriltag_grab" output="screen"/>
 </launch>
