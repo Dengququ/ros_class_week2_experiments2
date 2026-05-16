@@ -41,6 +41,49 @@ source devel/setup.bash
 
 ---
 
+## 第一周 · 主题与消息实验
+
+### 实验内容
+- 使用 C++/Python 实现 ROS 标准消息的发布与订阅
+- 自定义 ROS 消息类型
+- 体验机器人上的主题与消息
+- 使用 Launch 文件启动节点
+
+### 对应代码
+
+| 实验 | C++ 代码 | Python 代码 |
+|------|---------|------------|
+| 标准消息 Topic | `ros_publisher.cpp` / `ros_subscriber.cpp` | `ros_publisher_node.py` / `ros_subscriber_node.py` |
+| 自定义消息 Topic | `msg_publisher.cpp` / `msg_subscriber.cpp` | — |
+
+### 启动命令
+
+```bash
+# C++ 标准消息
+roscore
+rosrun my_class_pkg ros_publisher_node     # 终端2
+rosrun my_class_pkg ros_subscriber_node    # 终端3
+
+# Python 标准消息
+rosrun my_class_pkg ros_publisher_node.py
+rosrun my_class_pkg ros_subscriber_node.py
+
+# C++ 自定义消息
+rosrun my_class_pkg msg_publisher_node
+rosrun my_class_pkg msg_subscriber_node
+
+# 体验机器人上的主题
+roslaunch upros_bringup bringup_w2a.launch
+rostopic list
+rostopic echo /odom
+rosrun teleop_twist_keyboard teleop_twist_keyboard.py
+
+# Launch 一键启动
+roslaunch my_class_pkg bringup_topic.launch
+```
+
+---
+
 ## 第二周 · 话题、服务与动作通信实验
 
 ### 实验内容
