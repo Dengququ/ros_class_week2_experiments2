@@ -7,7 +7,7 @@
 ```
 djf_ros_class_ws/
 └── src/
-    ├── my_class_pkg/               # 第二、三、六周实验代码
+    ├── my_class_pkg/               # 第二、三、五、六周实验代码
     │   ├── msg/MyMessage.msg       # 自定义消息
     │   ├── srv/MyServiceMsg.srv    # 自定义服务
     │   ├── action/MyAction.action  # 自定义动作
@@ -210,6 +210,48 @@ rosrun teleop_twist_keyboard teleop_twist_keyboard.py
 
 # W2A 机械臂 Gazebo 仿真
 roslaunch zx_description w2a.launch
+```
+
+---
+
+## 第五周 · 视觉实验
+
+### 实验内容
+- 基于 HSV 颜色识别的自主巡线
+- AprilTag 视觉标记识别与跟随
+- AprilTag 视觉识别 + 机械臂抓取
+
+### 对应代码
+
+| 实验 | 代码文件 | 功能 |
+|------|---------|------|
+| 颜色巡线 | `color_line_follow.py` | HSV 颜色分割提取色带，计算重心控制底盘沿线前进 |
+| AprilTag 跟随 | `apriltag_follow.py` | 检测 ID=1 的 AprilTag，自动转向并靠近目标 |
+| AprilTag 抓取 | `apriltag_grab.py` | 靠近对准 + TF 坐标查询 + 机械臂抓取 |
+
+### 启动命令
+
+```bash
+# === 颜色巡线 ===
+roslaunch zoo_bringup bringup_w2c.launch
+roslaunch realsense2_camera rs_camera.launch
+source ~/djf_ros_class_ws/devel/setup.bash
+rosrun my_class_pkg color_line_follow.py
+
+# === AprilTag 跟随 ===
+roslaunch zoo_bringup bringup_w2c.launch
+roslaunch realsense2_camera rs_camera.launch
+rosrun my_class_pkg apriltag_follow.py
+
+# === AprilTag 抓取（方式一：分终端） ===
+roslaunch zoo_bringup bringup_w2c.launch
+roslaunch realsense2_camera rs_camera.launch
+roslaunch upros_arm recognize_apriltag.launch
+roslaunch upros_arm control_center.launch
+rosrun my_class_pkg apriltag_grab.py
+
+# === AprilTag 抓取（方式二：Launch 一键启动） ===
+roslaunch my_class_pkg apriltag_grab.launch
 ```
 
 ---
