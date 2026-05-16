@@ -1,30 +1,30 @@
-# DJF_ROS_CLASS_WS — ROS 实验工作空间
+# ROS 系统实践 — 实验代码仓库
 
-## 工作空间结构
+> ROS Noetic | 智行-W2A 机器人平台 | Ubuntu 20.04
+
+## 仓库结构
 
 ```
 djf_ros_class_ws/
 └── src/
-    ├── my_class_pkg/           # 第二周：话题/服务/动作/传感器实验
-    │   ├── msg/                # 自定义消息
-    │   ├── srv/                # 自定义服务
-    │   ├── action/             # 自定义动作
-    │   ├── src/                # C++ 节点
-    │   ├── scripts/            # Python 节点
-    │   └── launch/             # Launch 文件
-    ├── djf_robot_description/  # 第四周：两轮小车 URDF/Xacro 建模
+    ├── my_class_pkg/               # 第二、三、六周实验代码
+    │   ├── msg/MyMessage.msg       # 自定义消息
+    │   ├── srv/MyServiceMsg.srv    # 自定义服务
+    │   ├── action/MyAction.action  # 自定义动作
+    │   ├── cfg/Tutorials.cfg       # 动态参数配置
+    │   ├── src/                    # C++ 节点
+    │   ├── scripts/                # Python 节点
+    │   └── launch/                 # Launch 文件
+    ├── djf_robot_description/      # 第四周：两轮小车 URDF/Xacro 建模
     │   ├── urdf/
-    │   │   ├── simple_robot.urdf   # 原始 URDF
-    │   │   └── simple_robot.xacro  # Xacro 参数化版本（含激光雷达）
+    │   │   ├── simple_robot.urdf
+    │   │   └── simple_robot.xacro
     │   └── launch/
     │       ├── display.launch      # RViz 可视化
     │       └── gazebo.launch       # Gazebo 仿真
-    └── zx_description/         # 第四周：教具机 W2A 机械臂模型
+    └── zx_description/             # 第四周：W2A 机械臂模型
         ├── urdf/W2A/
-        │   ├── w2a.urdf
-        │   └── w2a.xacro
         └── launch/
-            └── w2a.launch          # Gazebo 仿真启动
 ```
 
 ---
@@ -37,164 +37,72 @@ catkin_make
 source devel/setup.bash
 ```
 
----
-
-## 第四周：机器人建模与 Gazebo 仿真
-
-### 两轮小车（djf_robot_description）
-
-```bash
-source ~/djf_ros_class_ws/devel/setup.bash
-
-# RViz 可视化
-roslaunch djf_robot_description display.launch
-
-# Gazebo 仿真
-roslaunch djf_robot_description gazebo.launch
-
-# 键盘控制小车（新终端）
-rosrun teleop_twist_keyboard teleop_twist_keyboard.py
-```
-
-### 教具机 W2A 机械臂（zx_description）
-
-```bash
-source ~/djf_ros_class_ws/devel/setup.bash
-
-# Gazebo 仿真
-roslaunch zx_description w2a.launch
-```
+> 所有传感器实验需先启动硬件通信：`roslaunch upros_bringup bringup_w2a.launch`
 
 ---
 
-## 启动指令
+## 第二周 · 话题、服务与动作通信实验
 
-### 5.1 C++ 标准消息（Topic）
+### 实验内容
+- ROS 话题（Topic）发布/订阅通信
+- ROS 服务（Service）请求/响应通信
+- ROS 动作（Action）异步任务通信
+- 自定义消息类型、Launch 文件
+
+### 对应代码
+
+| 实验 | C++ 代码 | Python 代码 |
+|------|---------|------------|
+| 标准消息 Topic | `ros_publisher.cpp` / `ros_subscriber.cpp` | `ros_publisher_node.py` / `ros_subscriber_node.py` |
+| 自定义消息 Topic | `msg_publisher.cpp` / `msg_subscriber.cpp` | — |
+| Service 服务 | `ros_server.cpp` / `ros_client.cpp` | `ros_server.py` / `ros_client.py` |
+| Action 动作 | `ros_action_server.cpp` / `ros_action_client.cpp` | `ros_action_server.py` / `ros_action_client.py` |
+
+### 启动命令
 
 ```bash
-# 终端1 — 启动 ROS Master
+# === 话题实验 ===
+
+# C++ 标准消息
 roscore
+rosrun my_class_pkg ros_publisher_node     # 终端2
+rosrun my_class_pkg ros_subscriber_node    # 终端3
 
-# 终端2 — 发布者
-rosrun my_class_pkg ros_publisher_node
-
-# 终端3 — 订阅者
-rosrun my_class_pkg ros_subscriber_node
-
-# 或查看话题内容
-rostopic echo /my_topic
-```
-
----
-
-### 5.2 Python 标准消息（Topic）
-
-```bash
-# 终端1
-roscore
-
-# 终端2 — 发布者
+# Python 标准消息
 rosrun my_class_pkg ros_publisher_node.py
-
-# 终端3 — 订阅者
 rosrun my_class_pkg ros_subscriber_node.py
-```
 
----
-
-### 5.3 C++ 自定义消息（MyMessage）
-
-```bash
-# 终端1
-roscore
-
-# 终端2 — 自定义消息发布者
+# C++ 自定义消息
 rosrun my_class_pkg msg_publisher_node
-
-# 终端3 — 自定义消息订阅者
 rosrun my_class_pkg msg_subscriber_node
 
-# 或查看话题内容
-rostopic echo /my_msg_topic
-```
-
----
-
-### 5.5 Launch 文件一键启动（发布者 + 订阅者）
-
-```bash
+# Launch 一键启动
 roslaunch my_class_pkg bringup_topic.launch
-```
 
-> 无需单独启动 roscore，launch 文件会自动处理。
+# === 服务实验 ===
 
----
-
-### 服务实验（Service）
-
-#### C++ 服务
-
-```bash
-# 终端1
-roscore
-
-# 终端2 — 服务端
+# C++
 rosrun my_class_pkg ros_server_node
-
-# 终端3 — 客户端（一次性请求）
 rosrun my_class_pkg ros_client_node
-```
 
-#### Python 服务
-
-```bash
-# 终端1
-roscore
-
-# 终端2 — 服务端
+# Python
 rosrun my_class_pkg ros_server.py
-
-# 终端3 — 客户端
 rosrun my_class_pkg ros_client.py
-```
 
----
+# === 动作实验 ===
 
-### 动作实验（Action）
-
-#### C++ 动作
-
-```bash
-# 终端1
-roscore
-
-# 终端2 — 动作服务端
+# C++
 rosrun my_class_pkg ros_action_server
-
-# 终端3 — 动作客户端
 rosrun my_class_pkg ros_action_client
-```
 
-#### Python 动作
-
-```bash
-# 终端1
-roscore
-
-# 终端2 — 动作服务端
+# Python
 rosrun my_class_pkg ros_action_server.py
-
-# 终端3 — 动作客户端
 rosrun my_class_pkg ros_action_client.py
 ```
 
----
-
-## 验证自定义消息 / 服务 / 动作
+### 验证
 
 ```bash
-source ~/d_ros_class_ws/devel/setup.bash
-
 rosmsg show my_class_pkg/MyMessage
 rossrv show my_class_pkg/MyServiceMsg
 rosmsg show my_class_pkg/MyActionGoal
@@ -202,39 +110,187 @@ rosmsg show my_class_pkg/MyActionGoal
 
 ---
 
-## 传感器实验
+## 第二周 · 传感器实验
 
-> 所有传感器节点均需先启动硬件通信：
-> ```bash
-> roslaunch upros_bringup bringup_w2a.launch
-> ```
+### 实验内容
+- 碰撞传感器（Bump Sensor）数据订阅与避障
+- 超声波传感器（Ultrasonic）距离测量
+- TOF 传感器避障
 
-### 碰撞传感器（Bump Sensor）
+### 对应代码
+
+| 实验 | 代码文件 | 功能 |
+|------|---------|------|
+| 碰撞传感器 | `ros_bump.cpp` | 订阅打印碰撞数据 |
+| 碰撞避障 | `ros_bump_avoid.cpp` | 碰撞后退+转向 |
+| 超声波 | `ros_sonic.cpp` | 订阅打印超声波距离 |
+| TOF 避障 | `ros_tof_avoid.cpp` | 距离<0.3m 时转向 |
+
+### 启动命令
 
 ```bash
-# 订阅并打印碰撞传感器数据
+# 先启动硬件
+roslaunch upros_bringup bringup_w2a.launch
+
+# 碰撞传感器
 rosrun my_class_pkg ros_bump_node
-
-# 基于碰撞传感器的自动避障（触碰后后退+转向）
 rosrun my_class_pkg ros_bump_avoid_node
-```
 
-### 超声波 / TOF 传感器
-
-```bash
-# 订阅并打印超声波距离数据（左/前/右）
+# 超声波
 rosrun my_class_pkg ros_sonic_node
 
-# 基于 TOF 传感器的自动避障（距离 < 0.3m 时转向）
+# TOF 避障
 rosrun my_class_pkg ros_tof_avoid_node
 ```
 
-### IMU 传感器
+---
+
+## 第三周 · 参数与动态参数实验
+
+### 实验内容
+- ROS 参数服务器（get/set/delete/has_param）
+- 动态参数配置（dynamic_reconfigure）
+- ROS 日志系统（DEBUG/INFO/WARN/ERROR/FATAL）
+
+### 对应代码
+
+| 实验 | C++ 代码 | Python 代码 |
+|------|---------|------------|
+| 参数服务器 | `ros_param.cpp` | `ros_param.py` |
+| 动态参数 | `dynamic_reconfigure.cpp` | — |
+| 动态调速 | `ros_dynamic_speed.cpp` | — |
+| 日志系统 | `ros_log.cpp` | `ros_log.py` |
+
+### 启动命令
 
 ```bash
-# 订阅并打印 IMU 数据（加速度 / 角速度 / 姿态四元数）
+# 参数实验
+roslaunch my_class_pkg parameter.launch
+
+# 动态参数
+rosrun my_class_pkg dynamic_reconfigure_node
+rosrun rqt_reconfigure rqt_reconfigure   # GUI 调参
+
+# 动态调速（通过 rqt_reconfigure 调节速度）
+rosrun my_class_pkg ros_dynamic_speed_node
+
+# 日志
+rosrun my_class_pkg ros_log
+rosrun my_class_pkg ros_log.py
+```
+
+---
+
+## 第四周 · 机器人建模与 Gazebo 仿真
+
+### 实验内容
+- URDF 机器人模型描述
+- Xacro 参数化建模（含激光雷达）
+- RViz 可视化与 Gazebo 物理仿真
+- W2A 教具机机械臂模型
+
+### 对应代码
+
+| 包名 | 内容 |
+|------|------|
+| `djf_robot_description` | 两轮差速小车 URDF/Xacro + Launch |
+| `zx_description` | W2A 机械臂完整模型 + Gazebo 世界 |
+
+### 启动命令
+
+```bash
+# 两轮小车 RViz 可视化
+roslaunch djf_robot_description display.launch
+
+# 两轮小车 Gazebo 仿真
+roslaunch djf_robot_description gazebo.launch
+
+# 键盘控制（新终端）
+rosrun teleop_twist_keyboard teleop_twist_keyboard.py
+
+# W2A 机械臂 Gazebo 仿真
+roslaunch zx_description w2a.launch
+```
+
+---
+
+## 第六周 · IMU 惯性测量单元传感器实验
+
+### 实验内容
+- 订阅 IMU 数据（加速度、角速度、姿态四元数）
+- RViz 中可视化 IMU 姿态
+- 利用 IMU 角速度积分实现精确自旋控制（180° 旋转）
+
+### 对应代码
+
+| 实验 | 代码文件 | 功能 |
+|------|---------|------|
+| IMU 数据订阅 | `ros_imu.cpp` | 打印加速度/角速度/四元数 |
+| IMU 自旋控制 | `ros_imu_spin.cpp` | 角速度积分，旋转指定圈数后停止 |
+
+### 启动命令
+
+```bash
+# 先启动硬件
+roslaunch upros_bringup bringup_w2a.launch
+
+# 订阅 IMU 数据
 rosrun my_class_pkg ros_imu_node
 
-# 基于 IMU 自旋控制（旋转精确 180°后自动停止）
+# RViz 可视化 IMU
+# Fixed Frame 设置为 imu_link，Add → By display type → rviz_imu_plugin
+
+# IMU 自旋控制（默认旋转 1 圈）
 rosrun my_class_pkg ros_imu_spin_node
+
+# 指定旋转圈数和速度
+rosrun my_class_pkg ros_imu_spin_node _rotations:=0.5 _speed:=0.5
 ```
+
+---
+
+## 第七周 · 语音交互与大模型实验
+
+### 实验内容
+- 麦克风音频获取
+- 离线语音识别（ASR）
+- 大模型在线问答（Moonshot API）
+- 文字转语音（TTS，VITS 模型）
+
+### 对应代码
+
+| 实验 | 代码文件 | 功能 |
+|------|---------|------|
+| 语音控制 | `voice_control.py` | 语音意图解析，发布控制指令 |
+| 分词器 | `tokenizer.py` | 中文分词 + 意图提取 |
+| 大模型对话 | `llm_chat.py` | Moonshot API 调用 |
+| 语音合成 | `tts_player.py` | VITS 端到端语音合成 |
+
+### 启动命令
+
+```bash
+# 先启动硬件 + 语音模块
+roslaunch upros_bringup bringup_w2a.launch
+roslaunch upros_chat speech_to_word.launch    # 语音识别
+roslaunch upros_chat word_to_speech.launch    # 语音合成
+
+# 语音控制节点
+rosrun my_class_pkg voice_control.py
+
+# 大模型对话节点
+rosrun my_class_pkg llm_chat.py
+```
+
+---
+
+## 技术栈
+
+| 组件 | 版本/型号 |
+|------|----------|
+| ROS | Noetic (Ubuntu 20.04) |
+| 机器人平台 | 智行-W2A (双轮差速) |
+| 激光雷达 | BlurSea E200 |
+| 深度相机 | Orbbec DaBai DCW2 |
+| IMU | 板载 MPU |
+| 语音合成 | sherpa-onnx VITS |
+| 大模型 | Moonshot (Kimi) |
